@@ -1,0 +1,75 @@
+plugins {
+	id 'multiloader-loader'
+	id 'net.fabricmc.fabric-loom'
+}
+
+repositories {
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = 'Modrinth'
+				url = uri('https://api.modrinth.com/maven')
+			}
+		}
+		filter {
+			includeGroup('maven.modrinth')
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+
+	if (project.hasProperty('hinex_iris')) {
+		localRuntime "maven.modrinth:sodium:mc26.3-0.9.2-fabric"
+		localRuntime "maven.modrinth:iris:1.11.6+26.3-fabric"
+	}
+}
+
+loom {
+	runs {
+		selftest {
+			client()
+			configName = 'HinexFeatures self-test (Fabric)'
+			vmArg '-Dhinex.selftest=true'
+			if (project.hasProperty('hinex_connect')) vmArg "-Dhinex.selftest.connect=${project.property('hinex_connect')}"
+			if (project.hasProperty('hinex_role')) vmArg "-Dhinex.selftest.role=${project.property('hinex_role')}"
+			if (project.hasProperty('hinex_name')) programArgs '--username', project.property('hinex_name').toString()
+			if (project.hasProperty('hinex_pack')) vmArg "-Dhinex.selftest.pack=${project.property('hinex_pack')}"
+			if (project.hasProperty('hinex_typing')) vmArg '-Dhinex.selftest.typing=true'
+			if (project.hasProperty('hinex_vfx')) vmArg "-Dhinex.selftest.vfx=${project.property('hinex_vfx')}"
+			if (project.hasProperty('hinex_config')) vmArg "-Dhinex.config=${project.property('hinex_config')}"
+			if (project.hasProperty('hinex_update_jar')) vmArg "-Dhinex.update.jar=${project.property('hinex_update_jar')}"
+			if (project.hasProperty('hinex_blocked')) vmArg '-Dhinex.selftest.blocked=true'
+			if (project.hasProperty('hinex_demo')) {
+				vmArg '-Dhinex.selftest.vfx.demo=true'
+				programArgs '--width', '1600', '--height', '900'
+			}
+			if (project.hasProperty('hinex_docs')) {
+				programArgs '--width', '1600', '--height', '900'
+				vmArg '-Dhinex.selftest.guiscale=3'
+			}
+			ideConfigGenerated false
+		}
+	}
+}
+
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
+	configurations.named(variant) {
+		attributes {
+			attribute(loaderAttribute, 'fabric')
+		}
+	}
+}
+sourceSets.configureEach {
+	[it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant ->
+		configurations.named(variant) {
+			attributes {
+				attribute(loaderAttribute, 'fabric')
+			}
+		}
+	}
+}

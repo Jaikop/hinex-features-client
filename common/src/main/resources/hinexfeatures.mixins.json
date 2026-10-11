@@ -1,0 +1,50 @@
+{
+	"required": true,
+	"package": "me.JAKOP.hinexFeatures.mod.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"admin.KeyboardHandlerMixin",
+		"chat.ChatScreenAccessor",
+		"chat.ChatScreenMixin",
+		"chat.EditBoxAccessor",
+		"core.MinecraftTickMixin",
+		"deathgame.DeathScreenAccessor",
+		"deathgame.GuiDeathScreenMixin",
+		"deathgame.MusicManagerMixin",
+		"dialog.HudActionBarMixin",
+		"dialog.MultiLineEditBoxAccessor",
+		"dialog.PauseScreenMixin",
+		"core.ScreenRenderMixin",
+		"packs.MinecraftMixin",
+		"prints.KnowledgeBookItemMixin",
+		"prints.LocalPlayerMixin",
+		"prints.MultiPlayerGameModeMixin",
+		"packs.PackRepositoryMixin",
+		"servers.AbstractSelectionListMixin",
+		"servers.JoinMultiplayerScreenMixin",
+		"servers.OnlineServerEntryMixin",
+		"servers.ServerListMixin",
+		"servers.ServerSelectionListMixin",
+		"typing.AvatarRendererMixin",
+		"typing.AvatarRenderStateMixin",
+		"typing.EntityRendererMixin",
+		"vanish.ClientSuggestionProviderMixin",
+		"vanish.SocialInteractionsPlayerListMixin",
+		"vfx.EntityRenderDispatcherMixin",
+		"vfx.FogRendererMixin",
+		"vfx.GameRendererMixin",
+		"vfx.HudMixin",
+		"vfx.LevelRendererMixin",
+		"vfx.RenderPipelinesMixin",
+		"vfx.RenderSetupAccessor",
+		"vfx.RenderTypeAccessor",
+		"vfx.TextureBindingAccessor",
+		"vfx.WorldBorderRendererMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

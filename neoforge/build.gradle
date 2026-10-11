@@ -1,0 +1,51 @@
+plugins {
+	id 'multiloader-loader'
+	id 'net.neoforged.moddev'
+}
+
+neoForge {
+	version = neoforge_version
+
+	runs {
+		client {
+			client()
+			gameDirectory = project.file('run')
+			ideName = 'HinexFeatures Client (NeoForge)'
+		}
+		selftest {
+			client()
+			gameDirectory = project.file('run')
+			ideName = 'HinexFeatures self-test (NeoForge)'
+			systemProperty 'hinex.selftest', 'true'
+			if (project.hasProperty('hinex_connect')) systemProperty 'hinex.selftest.connect', project.property('hinex_connect')
+			if (project.hasProperty('hinex_role')) systemProperty 'hinex.selftest.role', project.property('hinex_role')
+			if (project.hasProperty('hinex_pack')) systemProperty 'hinex.selftest.pack', project.property('hinex_pack')
+			if (project.hasProperty('hinex_typing')) systemProperty 'hinex.selftest.typing', 'true'
+			if (project.hasProperty('hinex_vfx')) systemProperty 'hinex.selftest.vfx', project.property('hinex_vfx')
+		}
+	}
+
+	mods {
+		"${mod_id}" {
+			sourceSet sourceSets.main
+		}
+	}
+}
+
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements'].each { variant ->
+	configurations.named(variant) {
+		attributes {
+			attribute(loaderAttribute, 'neoforge')
+		}
+	}
+}
+sourceSets.configureEach {
+	[it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName, it.getTaskName(null, 'jarJar')].each { variant ->
+		configurations.named(variant) {
+			attributes {
+				attribute(loaderAttribute, 'neoforge')
+			}
+		}
+	}
+}

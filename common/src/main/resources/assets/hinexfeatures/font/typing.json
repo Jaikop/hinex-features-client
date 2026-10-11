@@ -1,0 +1,11 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "hinexfeatures:font/typing.png",
+      "height": 11,
+      "ascent": 9,
+      "chars": [""]
+    }
+  ]
+}

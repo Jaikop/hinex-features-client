@@ -1,0 +1,10 @@
+{
+  "death_game": {
+    "sounds": [
+      {
+        "name": "hinexfeatures:death_game",
+        "stream": true
+      }
+    ]
+  }
+}

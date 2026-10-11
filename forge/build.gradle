@@ -1,0 +1,77 @@
+plugins {
+	id 'java'
+	id 'net.minecraftforge.gradle' version '[7.0.29,8.0)'
+}
+
+def props = new Properties()
+file('../gradle.properties').withInputStream { props.load(it) }
+
+version = props.version
+group = props.group
+base.archivesName = "${props.mod_name}-forge"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(props.java_version as int)
+
+sourceSets.main {
+	java.srcDir '../common/src/main/java'
+	resources.srcDir '../common/src/main/resources'
+}
+
+minecraft {
+	runs {
+		configureEach {
+			workingDir.convention layout.projectDirectory.dir('run')
+			args "--mixin.config=${props.mod_id}.mixins.json"
+		}
+		register('client') {
+			if (project.hasProperty('hinex_selftest')) systemProperty 'hinex.selftest', 'true'
+			if (project.hasProperty('hinex_connect')) systemProperty 'hinex.selftest.connect', project.property('hinex_connect')
+			if (project.hasProperty('hinex_role')) systemProperty 'hinex.selftest.role', project.property('hinex_role')
+			if (project.hasProperty('hinex_pack')) systemProperty 'hinex.selftest.pack', project.property('hinex_pack')
+			if (project.hasProperty('hinex_typing')) systemProperty 'hinex.selftest.typing', 'true'
+			if (project.hasProperty('hinex_vfx')) systemProperty 'hinex.selftest.vfx', project.property('hinex_vfx')
+		}
+	}
+}
+
+repositories {
+	minecraft.mavenizer(it)
+	maven fg.forgeMaven
+	maven fg.minecraftLibsMaven
+	mavenCentral()
+}
+
+dependencies {
+	implementation minecraft.dependency("net.minecraftforge:forge:${props.forge_version}")
+	annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.6'
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+	options.release = props.java_version as int
+}
+
+processResources {
+	def expandProps = [
+			'version'                : props.version,
+			'mod_id'                 : props.mod_id,
+			'mod_name'               : props.mod_name,
+			'mod_author'             : props.mod_author,
+			'minecraft_version_range': props.minecraft_version_range
+	]
+	inputs.properties(expandProps)
+	filesMatching('META-INF/mods.toml') {
+		expand expandProps
+	}
+	inputs.property('mixinCompatibilityFilter', 'strip')
+	filesMatching("${props.mod_id}.mixins.json") {
+		filter { String line -> line.contains('"compatibilityLevel"') ? '' : line }
+	}
+}
+
+tasks.named('jar', Jar) {
+	manifest {
+		attributes['MixinConfigs'] = "${props.mod_id}.mixins.json"
+	}
+	exclude('me/JAKOP/hinexFeatures/mod/selftest/**')
+}

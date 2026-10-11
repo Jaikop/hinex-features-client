@@ -1,0 +1,31 @@
+{
+	"schemaVersion": 1,
+	"id": "${mod_id}",
+	"version": "${version}",
+	"name": "${mod_name}",
+	"description": "Клиентская часть для нормальной игры на Hinex. Исходный код: github.com/Jaikop/hinex-features-client",
+	"authors": [
+		"${mod_author}"
+	],
+	"contact": {
+		"homepage": "https://hinex-server.ru/",
+		"sources": "https://github.com/Jaikop/hinex-features-client"
+	},
+	"license": "MIT",
+	"icon": "assets/hinexfeatures/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"me.JAKOP.hinexFeatures.mod.fabric.HinexFeaturesFabric"
+		]
+	},
+	"mixins": [
+		"hinexfeatures.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=${loader_version}",
+		"minecraft": "~26.3",
+		"java": ">=${java_version}",
+		"fabric-api": "*"
+	}
+}
